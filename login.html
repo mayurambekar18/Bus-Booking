@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Login</title>
+<style>
+*{
+  box-sizing:border-box;
+  font-family:"Segoe UI", Arial, sans-serif;
+}
+
+body{
+  margin:0;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:linear-gradient(135deg,#43e97b,#38f9d7);
+}
+
+.container{
+  background:#fff;
+  width:380px;
+  padding:30px;
+  border-radius:12px;
+  box-shadow:0 15px 30px rgba(0,0,0,0.2);
+  animation:slideUp 0.6s ease;
+}
+
+@keyframes slideUp{
+  from{transform:translateY(30px);opacity:0}
+  to{transform:translateY(0);opacity:1}
+}
+
+h2{
+  text-align:center;
+  margin-bottom:5px;
+  color:#198754;
+}
+
+.sub{
+  text-align:center;
+  color:#666;
+  font-size:14px;
+  margin-bottom:20px;
+}
+
+label{
+  font-size:14px;
+  font-weight:600;
+  color:#333;
+}
+
+input{
+  width:100%;
+  padding:10px;
+  margin:8px 0 15px;
+  border:1px solid #ccc;
+  border-radius:6px;
+  font-size:14px;
+}
+
+input:focus{
+  border-color:#198754;
+  outline:none;
+}
+
+button{
+  width:100%;
+  padding:12px;
+  background:#198754;
+  color:#fff;
+  border:none;
+  border-radius:6px;
+  font-size:16px;
+  cursor:pointer;
+  transition:0.3s;
+}
+
+button:hover{
+  background:#146c43;
+}
+
+.footer{
+  text-align:center;
+  margin-top:15px;
+  font-size:14px;
+}
+
+.footer a{
+  color:#198754;
+  text-decoration:none;
+  font-weight:600;
+}
+
+.footer a:hover{
+  text-decoration:underline;
+}
+</style>
+</head>
+<body>
+
+<div class="box">
+<h2>User Login</h2>
+<input id="email" placeholder="Enter Email">
+<input id="password" type="password" placeholder="Enter Password">
+<button onclick="login()">Login</button>
+<p>New user? <a href="register.html">Create Account</a></p>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword }
+from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDAFBF1y6Sa62S9EGmfPJojeoEPOzYhKlI",
+  authDomain: "gjdfgh-d57b0.firebaseapp.com",
+  projectId: "gjdfgh-d57b0",
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+window.login = function(){
+signInWithEmailAndPassword(auth,email.value,password.value)
+.then(()=>{
+alert("Login Successful 🎉");
+location.href="booking.html"; 
+})
+.catch(e=>alert(e.message));
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Register</title>
+<style>
+*{
+  box-sizing:border-box;
+  font-family: "Segoe UI", Arial, sans-serif;
+}
+
+body{
+  margin:0;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:linear-gradient(135deg,#4facfe,#00f2fe);
+}
+
+.container{
+  background:#fff;
+  width:380px;
+  padding:30px;
+  border-radius:12px;
+  box-shadow:0 15px 30px rgba(0,0,0,0.2);
+  animation:slideUp 0.6s ease;
+}
+
+@keyframes slideUp{
+  from{transform:translateY(30px);opacity:0}
+  to{transform:translateY(0);opacity:1}
+}
+
+h2{
+  text-align:center;
+  margin-bottom:5px;
+  color:#0d6efd;
+}
+
+.sub{
+  text-align:center;
+  color:#666;
+  font-size:14px;
+  margin-bottom:20px;
+}
+
+label{
+  font-size:14px;
+  font-weight:600;
+  color:#333;
+}
+
+input{
+  width:100%;
+  padding:10px;
+  margin:8px 0 15px;
+  border:1px solid #ccc;
+  border-radius:6px;
+  font-size:14px;
+}
+
+input:focus{
+  border-color:#0d6efd;
+  outline:none;
+}
+
+button{
+  width:100%;
+  padding:12px;
+  background:#0d6efd;
+  color:#fff;
+  border:none;
+  border-radius:6px;
+  font-size:16px;
+  cursor:pointer;
+  transition:0.3s;
+}
+
+button:hover{
+  background:#084298;
+}
+
+.footer{
+  text-align:center;
+  margin-top:15px;
+  font-size:14px;
+}
+
+.footer a{
+  color:#0d6efd;
+  text-decoration:none;
+  font-weight:600;
+}
+
+.footer a:hover{
+  text-decoration:underline;
+}
+</style>
+</head>
+<body>
+<div class="box">
+<h2>Create Account</h2>
+<input id="email" placeholder="Enter Email">
+<input id="password" type="password" placeholder="Enter Password">
+<button onclick="register()">Register</button>
+<p>Already have account? <a href="login.html">Login Here</a></p>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword }
+from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDAFBF1y6Sa62S9EGmfPJojeoEPOzYhKlI",
+  authDomain: "gjdfgh-d57b0.firebaseapp.com",
+  projectId: "gjdfgh-d57b0",
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+window.register = function(){
+createUserWithEmailAndPassword(auth,email.value,password.value)
+.then(()=>{
+alert("Registration Successful");
+location.href="login.html";
+})
+.catch(e=>alert(e.message));
+}
+</script>
+
+</body>
+</html>

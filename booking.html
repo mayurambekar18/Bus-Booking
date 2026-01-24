@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Bus Booking System</title>
+  <style>
+    *{
+      box-sizing:border-box;
+      font-family:"Segoe UI", Arial, sans-serif;
+    }
+
+    body{
+      margin:0;
+      background:#f1f5f9;
+      padding:20px;
+    }
+
+    h2{
+      color:#0d6efd;
+      margin-bottom:10px;
+    }
+
+    h3{
+      margin-top:30px;
+      color:#333;
+    }
+
+    .card{
+      background:#fff;
+      padding:20px;
+      border-radius:10px;
+      box-shadow:0 10px 20px rgba(0,0,0,.08);
+      margin-bottom:20px;
+      max-width:900px;
+    }
+
+    .row{
+      display:flex;
+      gap:15px;
+      flex-wrap:wrap;
+    }
+
+    select,input{
+      padding:10px;
+      border:1px solid #ccc;
+      border-radius:6px;
+      font-size:14px;
+      width:220px;
+    }
+
+    input:focus,select:focus{
+      outline:none;
+      border-color:#0d6efd;
+    }
+
+    button{
+      padding:10px 18px;
+      background:#0d6efd;
+      color:white;
+      border:none;
+      border-radius:6px;
+      cursor:pointer;
+      transition:.3s;
+    }
+
+    button:hover{
+      background:#084298;
+    }
+
+    .infoBox{
+      background:#f8f9fa;
+      padding:12px;
+      border-radius:8px;
+      border:1px solid #ddd;
+      width:300px;
+    }
+
+    .msg{
+      margin-top:10px;
+      font-weight:600;
+      color:#dc3545;
+    }
+
+    table{
+      width:100%;
+      background:#fff;
+      border-collapse:collapse;
+      margin-top:10px;
+      border-radius:10px;
+      overflow:hidden;
+    }
+
+    th,td{
+      padding:10px;
+      border-bottom:1px solid #ddd;
+      text-align:center;
+      font-size:14px;
+    }
+
+    th{
+      background:#0d6efd;
+      color:white;
+    }
+
+    tr:hover{
+      background:#f1f1f1;
+    }
+
+    .actions button{
+      margin:2px;
+      padding:6px 10px;
+      font-size:13px;
+    }
+
+    .danger{
+      background:#dc3545;
+    }
+
+    .danger:hover{
+      background:#b02a37;
+    }
+  </style>
+</head>
+<body>
+
+<h2> Bus Booking System</h2>
+
+<h3>Book Ticket</h3>
+
+<select id="busNo" onchange="onBusChange()">
+  <option value="">Select Bus</option>
+</select><br>
+
+<div class="infoBox">
+  <b>Bus Type:</b> <span id="busType">-</span><br>
+  <b>Ticket Price:</b> ₹<span id="fare">-</span>
+</div><br>
+
+<input id="journeyDate" type="date"><br>
+<input id="passengerName" placeholder="Passenger Name"><br>
+<input id="mobile" placeholder="Mobile Number"><br>
+<input id="seat" type="number" placeholder="Seat No"><br>
+
+<button onclick="payAndBook()">Pay & Book Ticket</button>
+
+<p id="msg"></p>
+
+<hr>
+<h3>Search / Filter Bookings</h3>
+
+<select id="searchBus">
+  <option value="">All Buses</option>
+</select>
+
+<input type="date" id="searchDate">
+<button onclick="searchBookings()">Search</button>
+
+<hr>
+
+<h3>Bookings </h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>Bus</th>
+      <th>Type</th>
+      <th>Date</th>
+      <th>Seat</th>
+      <th>Fare</th>
+      <th>Passenger</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody id="tbody"></tbody>
+</table>
+<script type="module">
+import { db } from "./firebase.js";
+import { collection, addDoc, onSnapshot } from
+"https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+
+/* 🔥 FIREBASE COLLECTION */
+const liveRef = collection(db, "liveBookings");
+
+/* 🔥 REALTIME LISTENER (MULTI CLIENT SYNC) */
+onSnapshot(liveRef, () => {
+  loadBookings();   // MongoDB se data reload
+});
+
+/* 🔥 FIREBASE STORE FUNCTION */
+window.storeLiveBooking = async function (busNo, seat) {
+  await addDoc(liveRef, {
+    busNo: busNo,
+    seat: seat,
+    time: new Date()
+  });
+};
+</script>
+
+<script>
+  /* LOAD BUS LIST IN SEARCH DROPDOWN */
+function loadSearchBuses() {
+  searchBus.innerHTML = `<option value="">All Buses</option>`;
+  busesData.forEach(b => {
+    searchBus.innerHTML += `<option value="${b.busNo}">${b.busNo}</option>`;
+  });
+}
+
+/* SEARCH / FILTER */
+async function searchBookings() {
+  isSearching = true; // 🔒 stop realtime auto refresh
+
+  let url = "http://localhost:5000/searchBookings?";
+
+  if (searchBus.value) {
+    url += "busNo=" + searchBus.value + "&";
+  }
+  if (searchDate.value) {
+    url += "journeyDate=" + searchDate.value;
+  }
+
+  const res = await fetch(url);
+  const data = await res.json();
+
+  tbody.innerHTML = "";
+
+  if (data.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="7">No records found</td></tr>`;
+    return;
+  }
+
+  data.forEach(b => {
+    tbody.innerHTML += `
+      <tr>
+        <td>${b.busNo}</td>
+        <td>${b.busType}</td>
+        <td>${b.journeyDate}</td>
+        <td>${b.seat}</td>
+        <td>₹${b.fare}</td>
+        <td>${b.passengerName}</td>
+        <td>
+          <button onclick="updateSeat('${b._id}', ${b.seat})">Update</button>
+          <button onclick="deleteBooking('${b._id}')">Delete</button>
+        </td>
+      </tr>`;
+  });
+}
+
+let busesData = [];
+
+/* LOAD MASTER BUSES */
+async function loadBuses() {
+  const res = await fetch("http://localhost:5000/buses");
+  busesData = await res.json();
+
+  busNo.innerHTML = `<option value="">Select Bus</option>`;
+  busesData.forEach(b => {
+    busNo.innerHTML += `
+      <option value="${b.busNo}">
+        ${b.busNo} | ${b.source} → ${b.destination}
+      </option>`;
+  });
+    loadSearchBuses();
+}
+/* ON BUS SELECT */
+function onBusChange() {
+  const bus = busesData.find(b => b.busNo === busNo.value);
+  if (!bus) return;
+
+  busType.innerText = bus.busType;
+  fare.innerText = bus.fare;
+}
+
+async function payAndBook() {
+  if (!busNo.value) {
+    alert("Select bus first");
+    return;
+  }
+
+  if (!confirm("Pay ₹" + fare.innerText + " ?")) return;
+
+  const res = await fetch("http://localhost:5000/book", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      busNo: busNo.value,
+      busType: busType.innerText,
+      fare: Number(fare.innerText),
+      seat: seat.value,
+      passengerName: passengerName.value,
+      mobile: mobile.value,
+      journeyDate: journeyDate.value
+    })
+  });
+
+  const result = await res.json();
+  msg.innerText = result.message || "Booked";
+
+  /* 🔥 FIREBASE REALTIME STORE */
+  await storeLiveBooking(busNo.value, seat.value);
+
+  loadBookings();
+}
+
+/* READ */
+async function loadBookings() {
+  const res = await fetch("http://localhost:5000/bookings");
+  const data = await res.json();
+
+  tbody.innerHTML = "";
+  data.forEach(b => {
+    tbody.innerHTML += `
+      <tr>
+        <td>${b.busNo}</td>
+        <td>${b.busType}</td>
+        <td>${b.journeyDate}</td>
+        <td>${b.seat}</td>
+        <td>₹${b.fare}</td>
+        <td>${b.passengerName}</td>
+        <td>
+          <button onclick="updateSeat('${b._id}', ${b.seat})">Update</button>
+          <button onclick="deleteBooking('${b._id}')">Delete</button>
+        </td>
+      </tr>`;
+  });
+}
+
+/* UPDATE */
+async function updateSeat(id, oldSeat) {
+  const newSeat = prompt("Enter new seat number", oldSeat);
+  if (!newSeat) return;
+
+  await fetch("http://localhost:5000/update", {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ id, seat: newSeat })
+  });
+
+  // 🔥 FIREBASE REALTIME TRIGGER
+  await storeLiveBooking("UPDATE", newSeat, "UPDATE");
+
+  loadBookings();
+}
+
+/* DELETE */
+async function deleteBooking(id) {
+  if (!confirm("Cancel this booking?")) return;
+
+  await fetch(`http://localhost:5000/delete/${id}`, {
+    method: "DELETE"
+  });
+
+  // 🔥 FIREBASE REALTIME TRIGGER
+  await storeLiveBooking("DELETE", "-", "DELETE");
+
+  loadBookings();
+}
+/* PAGE LOAD */
+loadBuses();
+loadBookings();
+</script>
+
+</body>
+</html>

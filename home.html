@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Bus Booking System</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f4f7fb;
+        }
+
+        /* NAVBAR */
+        nav {
+            background: #0d6efd;
+            padding: 15px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+        }
+
+        nav h2 {
+            font-size: 24px;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 25px;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        nav ul li a:hover {
+            color: #ffd43b;
+        }
+
+        /* HERO SECTION */
+        .hero {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 80px 10%;
+        }
+
+        .hero-text {
+            max-width: 500px;
+        }
+
+        .hero-text h1 {
+            font-size: 42px;
+            color: #0d6efd;
+            margin-bottom: 15px;
+        }
+
+        .hero-text p {
+            font-size: 18px;
+            color: #555;
+            margin-bottom: 30px;
+        }
+
+        .hero-text button {
+            padding: 12px 25px;
+            font-size: 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            background: #0d6efd;
+            color: white;
+            transition: 0.3s;
+        }
+
+        .hero-text button:hover {
+            background: #084298;
+        }
+
+        .hero-img img {
+            width: 420px;
+        }
+
+        /* FEATURES */
+        .features {
+            padding: 60px 10%;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 25px;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .card h3 {
+            color: #0d6efd;
+            margin-bottom: 10px;
+        }
+
+        .card p {
+            color: #555;
+        }
+
+        footer {
+            background: #0d6efd;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav>
+    <h2>🚌 Bus Booking</h2>
+    <ul>
+        <li><a href="home.html">Home</a></li>
+        <li><a href="login.html">Login</a></li>
+        <li><a href="register.html">Register</a></li>
+        <li><a href="booking.html">Booking</a></li>
+        <li><a href="dashboard.html">Dashboard</a></li>
+    </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+    <div class="hero-text">
+        <h1>Real-Time Bus Booking System</h1>
+        <p>
+            Book bus seats instantly with real-time availability, secure login,
+            and live updates using MongoDB and Firebase.
+        </p>
+        <button onclick="goBooking()">Book Now</button>
+    </div>
+
+    <div class="hero-img">
+        <img src="image/bus.png" alt="Bus">
+    </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features">
+    <div class="card">
+        <h3>🔐 Secure Login</h3>
+        <p>Firebase Authentication ensures secure user access.</p>
+    </div>
+
+    <div class="card">
+        <h3>⚡ Real-Time Booking</h3>
+        <p>Live seat updates across multiple users.</p>
+    </div>
+
+    <div class="card">
+        <h3>📊 Dashboard</h3>
+        <p>View bookings and statistics instantly.</p>
+    </div>
+
+    <div class="card">
+        <h3>🗄 MongoDB Storage</h3>
+        <p>Reliable data storage with aggregation and indexing.</p>
+    </div>
+</section>
+
+<footer>
+    © 2026 Real-Time Bus Booking System | TYIT Project
+</footer>
+
+<script>
+    function goBooking() {
+        window.location.href = "login.html";
+    }
+</script>
+
+</body>
+</html>

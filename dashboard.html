@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Bus Booking Dashboard</title>
+  <style>
+    body { font-family: Arial; background:#f4f6f8; padding:20px }
+    .card { background:#fff; padding:15px; width:200px; display:inline-block;
+            margin:10px; border-radius:5px; text-align:center }
+    table { width:100%; background:#fff; border-collapse:collapse; margin-top:20px }
+    th, td { border:1px solid #ccc; padding:8px; text-align:center }
+    th { background:#198754; color:white }
+  </style>
+</head>
+<body>
+
+<h2> Dashboard</h2>
+
+<!-- SUMMARY -->
+<div class="card">
+  <h3>Total Bookings</h3>
+  <p id="totalBookings">0</p>
+</div>
+
+<div class="card">
+  <h3>Total Buses</h3>
+  <p id="totalBuses">0</p>
+</div>
+
+<hr>
+
+<!-- AGGREGATION -->
+<h3>Bus-wise Booked Seats</h3>
+<table>
+  <thead>
+    <tr>
+      <th>Bus No</th>
+      <th>Total Seats Booked</th>
+    </tr>
+  </thead>
+  <tbody id="statsBody"></tbody>
+</table>
+
+<hr>
+
+<!-- LIVE BOOKINGS -->
+<h3>Recent Bookings (Live)</h3>
+<table>
+  <thead>
+    <tr>
+      <th>Bus</th>
+      <th>Seat</th>
+      <th>Date</th>
+      <th>Passenger</th>
+    </tr>
+  </thead>
+  <tbody id="liveBody"></tbody>
+</table>
+
+<script type="module">
+import { db } from "./firebase.js";
+import { collection, onSnapshot }
+from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+
+const liveRef = collection(db, "liveBookings");
+
+onSnapshot(liveRef, () => {
+  loadBookings();
+});
+</script>
+
+<script>
+async function loadBookings() {
+  const res = await fetch("http://localhost:5000/bookings");
+  const data = await res.json();
+
+  totalBookings.innerText = data.length;
+
+  liveBody.innerHTML = "";
+  data.slice(-5).reverse().forEach(b => {
+    liveBody.innerHTML += `
+      <tr>
+        <td>${b.busNo}</td>
+        <td>${b.seat}</td>
+        <td>${b.journeyDate}</td>
+        <td>${b.passengerName}</td>
+      </tr>`;
+  });
+}
+
+async function loadStats() {
+  const res = await fetch("http://localhost:5000/stats");
+  const data = await res.json();
+
+  statsBody.innerHTML = "";
+  data.forEach(s => {
+    statsBody.innerHTML += `
+      <tr>
+        <td>${s._id}</td>
+        <td>${s.totalBookedSeats}</td>
+      </tr>`;
+  });
+  
+}
+
+async function loadBusCount() {
+  const res = await fetch("http://localhost:5000/buses");
+  const data = await res.json();
+  totalBuses.innerText = data.length;
+}
+
+loadBookings();
+loadStats();
+loadBusCount();
+</script>
+
+</body>
+</html>
