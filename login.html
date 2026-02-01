@@ -124,7 +124,6 @@ const auth = getAuth(app);
 window.login = function(){
 signInWithEmailAndPassword(auth,email.value,password.value)
 .then(()=>{
-alert("Login Successful 🎉");
 location.href="booking.html"; 
 })
 .catch(e=>alert(e.message));

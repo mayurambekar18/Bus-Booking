@@ -12,7 +12,7 @@ connectDB().then(database => {
   db = database;
   console.log("MongoDB Connected");
 
-  // Index (TYIT requirement)
+  // Index
   db.collection("bookings").createIndex({ busNo: 1 });
 });
 
@@ -99,7 +99,7 @@ app.get("/bookings", async (req, res) => {
 });
 /* ================= FILTER BOOKINGS ================= */
 app.get("/searchBookings", async (req, res) => {
-  console.log("🔥 /searchBookings API CALLED");
+  console.log("/searchBookings API CALLED");
 
   const { busNo, journeyDate } = req.query;
 

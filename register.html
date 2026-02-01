@@ -123,7 +123,6 @@ const auth = getAuth(app);
 window.register = function(){
 createUserWithEmailAndPassword(auth,email.value,password.value)
 .then(()=>{
-alert("Registration Successful");
 location.href="login.html";
 })
 .catch(e=>alert(e.message));

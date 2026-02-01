@@ -177,15 +177,15 @@ import { db } from "./firebase.js";
 import { collection, addDoc, onSnapshot } from
 "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 
-/* 🔥 FIREBASE COLLECTION */
+/*  FIREBASE COLLECTION */
 const liveRef = collection(db, "liveBookings");
 
-/* 🔥 REALTIME LISTENER (MULTI CLIENT SYNC) */
+/*  REALTIME LISTENER (MULTI CLIENT SYNC) */
 onSnapshot(liveRef, () => {
   loadBookings();   // MongoDB se data reload
 });
 
-/* 🔥 FIREBASE STORE FUNCTION */
+/*  FIREBASE STORE FUNCTION */
 window.storeLiveBooking = async function (busNo, seat) {
   await addDoc(liveRef, {
     busNo: busNo,
@@ -206,7 +206,7 @@ function loadSearchBuses() {
 
 /* SEARCH / FILTER */
 async function searchBookings() {
-  isSearching = true; // 🔒 stop realtime auto refresh
+  isSearching = true; // stop realtime auto refresh
 
   let url = "http://localhost:5000/searchBookings?";
 
@@ -294,7 +294,7 @@ async function payAndBook() {
   const result = await res.json();
   msg.innerText = result.message || "Booked";
 
-  /* 🔥 FIREBASE REALTIME STORE */
+  /*  FIREBASE REALTIME STORE */
   await storeLiveBooking(busNo.value, seat.value);
 
   loadBookings();
@@ -348,7 +348,7 @@ async function deleteBooking(id) {
     method: "DELETE"
   });
 
-  // 🔥 FIREBASE REALTIME TRIGGER
+  //  FIREBASE REALTIME TRIGGER
   await storeLiveBooking("DELETE", "-", "DELETE");
 
   loadBookings();
